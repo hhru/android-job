@@ -15,23 +15,23 @@
  */
 package com.evernote.android.job.v14;
 
+import com.evernote.android.job.JobIdsInternal;
+import com.evernote.android.job.JobProxy;
+import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.JobCat;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.JobIntentService;
-
-import com.evernote.android.job.JobIdsInternal;
-import com.evernote.android.job.JobProxy;
-import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.JobCat;
+import android.support.v4.app.SafeJobIntentService;
 
 /**
  * @author rwondratschek
  */
-public final class PlatformAlarmService extends JobIntentService {
+public final class PlatformAlarmService extends SafeJobIntentService {
 
     private static final JobCat CAT = new JobCat("PlatformAlarmService");
 
@@ -50,7 +50,8 @@ public final class PlatformAlarmService extends JobIntentService {
         runJob(intent, this, CAT);
     }
 
-    /*package*/ static void runJob(@Nullable Intent intent, @NonNull Service service, @NonNull JobCat cat) {
+    /*package*/
+    static void runJob(@Nullable Intent intent, @NonNull Service service, @NonNull JobCat cat) {
         if (intent == null) {
             cat.i("Delivered intent is null");
             return;

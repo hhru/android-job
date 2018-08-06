@@ -15,14 +15,14 @@
  */
 package com.evernote.android.job;
 
+import com.evernote.android.job.util.JobCat;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.support.v4.app.JobIntentService;
-
-import com.evernote.android.job.util.JobCat;
+import android.support.v4.app.SafeJobIntentService;
 
 import java.util.Collection;
 import java.util.Set;
@@ -35,13 +35,15 @@ import java.util.concurrent.CountDownLatch;
  *
  * @author rwondratschek
  */
-public final class JobRescheduleService extends JobIntentService {
+public final class JobRescheduleService extends SafeJobIntentService {
 
     private static final JobCat CAT = new JobCat("JobRescheduleService", BuildConfig.DEBUG);
 
-    /*package*/ static void startService(Context context) {
+    /*package*/
+    static void startService(Context context) {
         try {
-            enqueueWork(context, JobRescheduleService.class, JobIdsInternal.JOB_ID_JOB_RESCHEDULE_SERVICE, new Intent());
+            enqueueWork(context, JobRescheduleService.class, JobIdsInternal.JOB_ID_JOB_RESCHEDULE_SERVICE,
+                    new Intent());
             latch = new CountDownLatch(1);
         } catch (Exception e) {
             /*
@@ -94,7 +96,7 @@ public final class JobRescheduleService extends JobIntentService {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    /*package*/ int rescheduleJobs(JobManager manager) {
+        /*package*/ int rescheduleJobs(JobManager manager) {
         return rescheduleJobs(manager, manager.getAllJobRequests(null, true, true));
     }
 
@@ -130,4 +132,5 @@ public final class JobRescheduleService extends JobIntentService {
         }
         return rescheduledCount;
     }
+
 }
